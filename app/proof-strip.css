@@ -1,0 +1,23 @@
+/* Back the explanatory row beneath the grove without turning it into a wall. */
+.proof-strip {
+  padding: 14px;
+  border: 1px solid #79d9ff1f;
+  border-radius: 26px;
+  background: linear-gradient(145deg, #0b1924d9, #11172bd9);
+  box-shadow:
+    0 20px 70px #0005,
+    inset 0 1px 0 #dffcff0d;
+  backdrop-filter: blur(18px) saturate(120%);
+}
+
+.proof-card {
+  border-color: #88ddff29;
+  background: linear-gradient(145deg, #102430ed, #0d1826ed);
+  box-shadow: inset 0 1px 0 #dffcff0a;
+}
+
+@media (max-width: 900px) {
+  .proof-strip {
+    padding: 10px;
+  }
+}
