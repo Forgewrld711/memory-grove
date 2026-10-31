@@ -24,6 +24,7 @@ new revision instead of rewriting history.
 - authenticated `GET`/`POST /api/grove/events` route that owns sequencing and hashing
 - server-side domain validation before an event reaches durable storage
 - provider-neutral realtime voice adapter contract; voice becomes evidence first
+- leaf-shaped voice chat with editable dictation drafts and optional spoken replies
 - versioned memory bundle with full provenance, native export, dry-run import,
   duplicate detection, and conflict quarantine
 - OpenHuman-inspired observe → reflect → evaluate → revise learning loop that

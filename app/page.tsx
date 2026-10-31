@@ -1,7 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { ArrowRight, Check, CircleDot, CloudSun, History, Link2, RotateCcw, Scissors, Sparkles, X } from "lucide-react";
+import { ArrowRight, Check, CircleDot, CloudSun, History, Leaf, Link2, RotateCcw, Scissors, Sparkles, X } from "lucide-react";
+import { GroveChat } from "@/components/grove-chat";
 
 type LinkStage = "idle" | "proposed" | "active";
 const humanLeaves = [{ x:34,y:35,label:"Why this film matters"},{x:60,y:23,label:"A promise I want preserved"},{x:73,y:45,label:"What I noticed at 02:14"}];
@@ -30,8 +31,9 @@ export default function Home() {
   const [receipt,setReceipt]=useState<"hidden"|"applied"|"undone">("hidden");
   const status=useMemo(()=>stage==="active"?"Both accepted · link active":stage==="proposed"?"Human accepted · Muse deciding":"No memories are shared by default",[stage]);
   return <main className="grove-shell">
-    <header className="topbar"><a href="#grove" className="brand"><span className="brand-mark"><Sparkles size={16}/></span><span>Memory Grove</span></a><div className="prototype-pill"><CircleDot size={13}/> live provenance prototype</div><button className="quiet-button"><History size={15}/> Event history</button></header>
+    <header className="topbar"><a href="#grove" className="brand"><span className="brand-mark"><Sparkles size={16}/></span><span>Memory Grove</span></a><div className="prototype-pill"><CircleDot size={13}/> live provenance prototype</div><a className="quiet-button" href="#talk"><Leaf size={15}/> Talk to your Muse</a></header>
     <section className="hero-copy"><p className="eyebrow">Memory that asks before it connects.</p><h1>Two minds. Two histories.<br/><em>One consented grove.</em></h1><p className="lede">Your memories and your agent’s reflections remain independently authored. When both choose to connect, the evidence between them lights up.</p></section>
+    <GroveChat />
     <section id="grove" className={`grove-grid stage-${stage}`}>
       <article className="tree-panel"><Tree owner="human"/></article>
       <article className="consent-panel">
