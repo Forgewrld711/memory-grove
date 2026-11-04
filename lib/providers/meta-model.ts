@@ -35,7 +35,9 @@ export function buildMuseRequest(turns: GroveChatTurn[], model = DEFAULT_MUSE_MO
     instructions: residentMuseInstructions,
     input: transcript,
     reasoning: { effort: "low" },
-    max_output_tokens: 220,
+    // Muse may spend several hundred tokens on private reasoning before it
+    // emits the deliberately short visible answer.
+    max_output_tokens: 1_024,
   };
 }
 
