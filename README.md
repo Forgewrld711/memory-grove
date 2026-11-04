@@ -12,7 +12,8 @@ Built for the **Meta Global AI Developer Hackathon 2026**.
 ## What is working
 
 - a responsive Human Tree, Consent Grove, and Agent Tree experience
-- a simple text chat with a custom leaf-shaped voice control
+- live Muse Spark 1.3 chat with a safe deterministic fallback
+- a custom leaf-shaped voice control
 - browser speech-to-text that produces an editable draft before sending
 - optional browser text-to-speech for Muse replies
 - explicit UI states for listening, thinking, and speaking
@@ -25,6 +26,7 @@ Built for the **Meta Global AI Developer Hackathon 2026**.
 - OpenHuman-inspired observe → reflect → evaluate → revise proposal loops
 - provider-neutral UpRock VSS evidence adapters
 - provider-neutral realtime voice and Muse integration seams
+- a privacy-preserving 12-turn-per-hour Muse demo limit
 
 Voice turns become evidence first. Sending a message does **not** silently save
 a memory. The human or agent may instead propose a reviewed leaf from the turn.
@@ -37,6 +39,10 @@ Requirements: Node.js 22.13+ and pnpm.
 pnpm install
 pnpm run dev
 ```
+
+To enable live Muse chat locally, copy `.env.example` to `.env.local` and set
+`MODEL_API_KEY` there. The key is read only by the server-side route. Without
+it, the interface remains fully demoable and labels replies as `safe demo`.
 
 Verification:
 
@@ -56,6 +62,11 @@ video results into evidence rather than model-authored fact.
 Muse Spark 1.3 is the intended default resident Muse. Provider credentials must
 be supplied as runtime secrets and must never enter source, Git history, event
 payloads, evidence, logs, or exported memory bundles.
+
+Private conversation and memory text use the standard Spark endpoint. The
+lower-cost contributor model is reserved for explicitly sanitized or synthetic
+background work because its data-use terms differ. The live route never writes
+chat directly into either tree: it can only offer a proposal for review.
 
 ## Submission timing
 

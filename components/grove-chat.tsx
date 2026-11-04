@@ -5,6 +5,7 @@ import { ArrowUp, Leaf, Mic, Square, Volume2, VolumeX } from "lucide-react";
 
 type VoiceState = "idle" | "listening" | "thinking" | "speaking";
 type ChatMessage = { id: number; role: "human" | "agent"; text: string };
+type ConnectionMode = "ready" | "live" | "demo";
 type SpeechResultLike = { 0: { transcript: string }; isFinal: boolean };
 type SpeechEventLike = { results: ArrayLike<SpeechResultLike>; resultIndex: number };
 type SpeechRecognitionLike = {
@@ -55,6 +56,7 @@ export function GroveChat() {
   const [voiceState, setVoiceState] = useState<VoiceState>("idle");
   const [speechEnabled, setSpeechEnabled] = useState(true);
   const [voiceAvailable, setVoiceAvailable] = useState(false);
+  const [connectionMode, setConnectionMode] = useState<ConnectionMode>("ready");
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const nextId = useRef(2);
 
@@ -81,17 +83,31 @@ export function GroveChat() {
     window.speechSynthesis.speak(utterance);
   };
 
-  const send = (text = draft) => {
+  const send = async (text = draft) => {
     const clean = text.trim();
     if (!clean || voiceState === "thinking") return;
-    setMessages((current) => [...current, { id: nextId.current++, role: "human", text: clean }]);
+    const humanMessage: ChatMessage = { id: nextId.current++, role: "human", text: clean };
+    const pendingMessages = [...messages, humanMessage];
+    setMessages(pendingMessages);
     setDraft("");
     setVoiceState("thinking");
-    window.setTimeout(() => {
-      const response = demoReply(clean);
-      setMessages((current) => [...current, { id: nextId.current++, role: "agent", text: response }]);
-      speak(response);
-    }, 620);
+    let response = "";
+    try {
+      const result = await fetch("/api/muse/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ turns: pendingMessages.map(({ role, text }) => ({ role, text })) }),
+      });
+      const payload = await result.json() as { text?: string };
+      if (!result.ok || !payload.text) throw new Error("Muse unavailable");
+      response = payload.text;
+      setConnectionMode("live");
+    } catch {
+      response = demoReply(clean);
+      setConnectionMode("demo");
+    }
+    setMessages((current) => [...current, { id: nextId.current++, role: "agent", text: response }]);
+    speak(response);
   };
 
   const submit = (event: FormEvent) => {
@@ -133,7 +149,7 @@ export function GroveChat() {
       <p className="eyebrow">A quieter way in</p>
       <h2>Talk naturally. <em>Choose what takes root.</em></h2>
       <p>Voice and text share one simple conversation. A turn becomes evidence first—not a permanent memory—and every proposed leaf still asks.</p>
-      <div className="chat-trust-row"><span><Leaf size={13} /> Review before memory</span><span className="adapter-status"><i /> Muse adapter · demo</span></div>
+      <div className="chat-trust-row"><span><Leaf size={13} /> Review before memory</span><span className={`adapter-status adapter-${connectionMode}`}><i /> Muse Spark · {connectionMode === "live" ? "live" : connectionMode === "demo" ? "safe demo" : "ready"}</span></div>
     </div>
     <div className="chat-card">
       <div className="chat-card-head">

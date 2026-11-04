@@ -2,6 +2,7 @@ import { sql } from "drizzle-orm";
 import {
   index,
   integer,
+  primaryKey,
   sqliteTable,
   text,
   uniqueIndex,
@@ -63,4 +64,15 @@ export const groveEvidence = sqliteTable(
       table.sourceHash,
     ),
   ],
+);
+
+/** Hourly server-side budget guard for the public Muse demo endpoint. */
+export const museUsage = sqliteTable(
+  "muse_usage",
+  {
+    subjectHash: text("subject_hash").notNull(),
+    bucketStart: text("bucket_start").notNull(),
+    requestCount: integer("request_count").notNull().default(0),
+  },
+  (table) => [primaryKey({ columns: [table.subjectHash, table.bucketStart] })],
 );
